@@ -21,7 +21,7 @@ addLayer("p", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         let exp = new Decimal(1)
-        if (hasUpgrade("p", 25)) exp = exp.times(1.25);
+        if (hasUpgrade("p", 21)) exp = exp.times(1.25);
         return exp;
      },
     row: 0, // Row the layer is in on the tree (0 is the first row)
@@ -61,7 +61,7 @@ addLayer("p", {
                 return player.points.add(1).pow(0.15)
             },
         },
-        25: {
+        21: {
             title: "Exp",
             description: "RAISES YOUR PRESTIGE INCOME TO THE POWER OF 1.25!!!111!!!!1!1!!!!!11!! WOOOOOOOOHHHOOOOOOOO (i have autism).",
             cost: new Decimal(30),
@@ -69,3 +69,52 @@ addLayer("p", {
     },
 }
 )
+
+
+
+
+
+// blank space for literally nothing
+
+
+
+
+addLayer("e", {
+    name: "exponent", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "EX", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#44f",
+    requires: new Decimal(500), // Can be a function that takes requirement increases into account
+    resource: "exponent points", // Name of prestige currency
+    baseResource: "prestige points", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.48, // Prestige currency exponent
+    gainMult() {
+        let mult = new Decimal(1)
+            return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        let exp = new Decimal(1)
+        return exp;
+     },
+    row: 1, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "e", description: "EX: Reset for exponent points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){
+        return true
+    },
+    upgrades: {
+    }
+}
+)
+
+
+
+
+
