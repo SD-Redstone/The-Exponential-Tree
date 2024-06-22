@@ -16,11 +16,14 @@ addLayer("p", {
     gainMult() {
         let mult = new Decimal(1)
         if (hasUpgrade('p', 13)) mult = mult.times(upgradeEffect('p', 13))
-        return mult
+        if (hasUpgrade('p', 14)) mult = mult.times(upgradeEffect('p', 14))
+            return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
-    },
+        let exp = new Decimal(1)
+        if (hasUpgrade("p", 25)) exp = exp.times(1.25);
+        return exp;
+     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -33,9 +36,9 @@ addLayer("p", {
             cost: new Decimal(1),
         },
         12: {
-            title: "Mult 2",
-            description: "Multiplies your point gain according to your pestige points.",
-            cost: new Decimal(3),
+            title: "Prestige Synergy-Mult",
+            description: "Multiplies your point gain according to your prestige points.",
+            cost: new Decimal(2),
             effect() {
                 return player[this.layer].points.add(1).pow(0.5)
             },
@@ -43,12 +46,26 @@ addLayer("p", {
         
         },
         13: {
-            title: "Reverse Mult 2",
+            title: "Prestige Self-Mult",
+            description: "Multiplies your prestige point gain according to your prestige points.",
+            cost: new Decimal(4),
+            effect() {
+                return player[this.layer].points.add(1).pow(0.15)
+            },
+        },
+        14: {
+            title: "Reverse Synergy-Mult",
             description: "Multiplies your prestige point gain according to your points.",
-            cost: new Decimal(6),
+            cost: new Decimal(8),
             effect() {
                 return player.points.add(1).pow(0.15)
             },
+        },
+        25: {
+            title: "Exp",
+            description: "RAISES YOUR PRESTIGE INCOME TO THE POWER OF 1.25!!!111!!!!1!1!!!!!11!! WOOOOOOOOHHHOOOOOOOO (i have autism).",
+            cost: new Decimal(30),
         }
     },
-})
+}
+)
