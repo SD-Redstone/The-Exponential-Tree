@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "0.1",
+	name: "Test 1",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -41,11 +41,10 @@ function canGenPoints(){
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
-
-	let gain = new Decimal(1)
-	cost: new Decimal(10) 
-	if (hasUpgrade('p', 11)) gain = gain.times(2)
-	return gain
+let gain = new Decimal(1)
+if (hasUpgrade('p', 11)) gain = gain.times(2)
+		if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12))
+  return gain
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
