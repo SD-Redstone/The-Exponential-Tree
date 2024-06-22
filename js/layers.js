@@ -29,7 +29,7 @@ addLayer("p", {
         11: {
             title: "Mult",
             description: "Multiplies your point gain by 2.",
-            cost: new Decimal(10),
+            cost: new Decimal(1),
         },
     },
 })
