@@ -49,7 +49,7 @@ addLayer("p", {
             description: "Multiplies your point gain according to your points.",
             cost: new Decimal(4),
             effect() {
-                if  (hasUpgrade('p', 21)) return player.points.add(1).pow(0.15).add(1).pow(0.2)
+                if  (hasUpgrade('p', 21)) return player.points.add(1).pow(0.15).add(1).pow(1.01)
                 else return player.points.add(1).pow(0.15) 
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
@@ -64,12 +64,12 @@ addLayer("p", {
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }
         },
         21: {
-            title: "Self Mult Boost",
+            title: "Self-Mult Boost",
             description: "RAISES YOUR SELF-MULT TO THE POWER OF 1.2!!!111!!!!1!1!!!!!11!! WOOOOOOOOHHHOOOOOOOO (i have autism).",
             cost: new Decimal(30),
         }
     },
-    passiveGeneration() { return (hasMilestone("e", 0)&&player.ma.current!="p")?1:0 }
+
     
 }
 )
@@ -119,15 +119,15 @@ addLayer("e", {
     buyables: {
         11: {title: "Reverse Synergy Boost",
             cost() 
-            { return new Decimal(10).times(new Decimal(2.1).pow(player[this.layer].buyables[this.id])).floor()},
+            { return new Decimal(10).times(new Decimal(3.8).pow(new Decimal(2).times(player[this.layer].buyables[this.id]))).floor().sub(37)},
             display() { // Everything else displayed in the buyable button after the title
                 let display = "Amount: " + player[this.layer].buyables[this.id] +
-                 "<br> Cost: " + new Decimal(10).times(new Decimal(3.8).pow(player[this.layer].buyables[this.id])).floor()
+                 "<br> Cost: " + new Decimal(10).times(new Decimal(3.8).pow(new Decimal(2).pow(player[this.layer].buyables[this.id]))).floor().sub(37)
                 return display
     },
     canAfford() { return player[this.layer].points.gte(this.cost()) },
     buy() {
-        player.e.points = player.e.points.sub(this.cost())
+        player.e.points = player.e.points.add(this.cost())
         setBuyableAmount('e', 11, getBuyableAmount('e', 11).add(1))
     }, 
 }
@@ -144,21 +144,21 @@ addLayer("e", {
 
 
 upgrades: { 
-       11:{
-        title:'Another Exponent?!',
-        description: 'Raises point gain to the 1.2th power',
-        cost: new Decimal(3)
-       }
+    11:{
+     title:'Another Exponent?!',
+     description: 'Raises point gain to the 1.2th power',
+     cost: new Decimal(3)
+    }
 },
 milestones: {
-        0: {
-            requirementDesc: "2 Exponent Points",
-           
-            done() { return player.e.points.gte(2) },
-        effectDesc: "Generate 10% of prestige points gain per second",
+    0: {
+        requirementDesc: "2 Exponent Points",
+       
+        done() { return player.e.points.gte(2) },
+    effectDesc: "Generate 10% of prestige points gain per second",
 
-         
-    }
+     
+}
 }
 })
 
