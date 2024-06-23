@@ -21,7 +21,8 @@ addLayer("p", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         let exp = new Decimal(1)
-        if (hasUpgrade("p", 21)) exp = exp.times(1.25);
+        if (hasUpgrade('p', 21)) exp = exp.times(1.25);
+        if (player.e.unlocked) exp = exp.add(player.e.buyables[11].times(2).log(6))
         return exp;
      },
     row: 0, // Row the layer is in on the tree (0 is the first row)
@@ -52,6 +53,7 @@ addLayer("p", {
             effect() {
                 return player[this.layer].points.add(1).pow(0.15)
             },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
         },
         14: {
             title: "Reverse Synergy-Mult",
@@ -60,6 +62,7 @@ addLayer("p", {
             effect() {
                 return player.points.add(1).pow(0.15)
             },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }
         },
         21: {
             title: "Exp",
@@ -67,6 +70,7 @@ addLayer("p", {
             cost: new Decimal(30),
         }
     },
+    
 }
 )
 
@@ -74,7 +78,7 @@ addLayer("p", {
 
 
 
-// blank space for literally nothing
+
 
 
 
@@ -86,12 +90,16 @@ addLayer("e", {
     startData() { return {
         unlocked: false,
 		points: new Decimal(0),
-    }},
-    color: "#44f",
-    requires: new Decimal(500), // Can be a function that takes requirement increases into account
+            }},
+    color(){let abcdefg ="#44f"
+        if (player.p.points < new Decimal(500)) abcdefg = "#aaa"
+        if (player.e.unlocked) abcdefg ="#44f"
+        return abcdefg 
+    } ,
+    requires() { return new Decimal(500).times(player[this.layer].points.pow(1.4).plus(1))}, // Can be a function that takes requirement increases into account
     resource: "exponent points", // Name of prestige currency
     baseResource: "prestige points", // Name of resource prestige is based on
-    baseAmount() {return player.points}, // Get the current amount of baseResource
+    baseAmount() {return player.p.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.48, // Prestige currency exponent
     gainMult() {
@@ -106,11 +114,29 @@ addLayer("e", {
     hotkeys: [
         {key: "e", description: "EX: Reset for exponent points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){
-        return true
+    layerShown(){return player.p.unlocked},
+    upgrades: { 
+       
     },
-    upgrades: {
-    }
+    buyables: {
+        11: {title: "Exponent",
+            cost() 
+            { return new Decimal(10).times(new Decimal(2).times((player[this.layer].buyables[this.id]).pow((player[this.layer].buyables[this.id]).log(new Decimal(2)).pow(player[this.layer].buyables[this.id]))).floor())},
+            display() { // Everything else displayed in the buyable button after the title
+                let display = "Amount: " + player[this.layer].buyables[this.id] +
+                 " Cost: " + new Decimal(10).times(player[this.layer].buyables[this.id].pow(2).floor())
+                return display
+    },
+    canAfford() { return player[this.layer].points.gte(this.cost()) },
+    buy() {
+        player[this.layer].points = player[this.layer].points.sub(this.cost())
+        setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+    },
+    purchaseLimit() { return new Decimal(30.1)} 
+}
+,
+}
+,
 }
 )
 
