@@ -28,6 +28,7 @@ addLayer("p", {
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
+    passiveGeneration() { return (hasMilestone("e", 0)) },
     upgrades: {
         11: {
             title: "Mult",
@@ -59,7 +60,7 @@ addLayer("p", {
             description: "Multiplies your prestige point gain according to your points.",
             cost: new Decimal(8),
             effect() {
-                return player.points.add(1).pow(0.15).pow(player.e.buyables[11].times(0.5).plus(1))
+                return player.points.add(1).pow(0.15).pow(buyableEffect('e', 11))
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }
         },
@@ -67,6 +68,15 @@ addLayer("p", {
             title: "Self-Mult Boost",
             description: "RAISES YOUR SELF-MULT TO THE POWER OF 1.2!!!111!!!!1!1!!!!!11!! WOOOOOOOOHHHOOOOOOOO (i have autism).",
             cost: new Decimal(30),
+        },
+        22:{
+            title: "Exp",
+            description: "RAISES YOUR POINT GAIN TO THE POWER OF 1.2!!!!!11111!!!111!!!1!!1!!11 YAAAAAYAYAYYYAYYYYYYY (i have autism pt.2).",
+            cost: new Decimal(100),
+            unlocked() { let SDRedstone = false
+                if (hasMilestone('e', 0)) SDRedstone = true
+                return SDRedstone
+            }
         }
     },
 
@@ -96,12 +106,14 @@ addLayer("e", {
         if (player.e.unlocked) abcdefg ="#44f"
         return abcdefg 
     } ,
-    requires() { return new Decimal(50).times(player[this.layer].points.pow(1.5).plus(1))}, // Can be a function that takes requirement increases into account
+    requires() { 
+        let x = new Decimal(50)
+        return x.times(player[this.layer].points.pow(3).plus(1))}, // Can be a function that takes requirement increases into account
     resource: "exponent points", // Name of prestige currency
     baseResource: "prestige points", // Name of resource prestige is based on
     baseAmount() {return player.p.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.48, // Prestige currency exponent
+    exponent: 0.3, // Prestige currency exponent
     gainMult() {
         let mult = new Decimal(1)
             return mult
@@ -119,17 +131,24 @@ addLayer("e", {
     buyables: {
         11: {title: "Reverse Synergy Boost",
             cost() 
-            { return new Decimal(10).times(new Decimal(3.8).pow(new Decimal(2).times(player[this.layer].buyables[this.id]))).floor().sub(37)},
-            display() { // Everything else displayed in the buyable button after the title
-                let display = "Amount: " + player[this.layer].buyables[this.id] +
-                 "<br> Cost: " + new Decimal(10).times(new Decimal(3.8).pow(new Decimal(2).pow(player[this.layer].buyables[this.id]))).floor().sub(37)
-                return display
-    },
+            { return new Decimal(10).times(new Decimal(3.8).pow(new Decimal(2).pow(player[this.layer].buyables[this.id]))).floor().sub(37)},
+            
     canAfford() { return player[this.layer].points.gte(this.cost()) },
     buy() {
-        player.e.points = player.e.points.add(this.cost())
+        player.e.points = player.e.points.sub(this.cost())
         setBuyableAmount('e', 11, getBuyableAmount('e', 11).add(1))
     }, 
+    effect() {
+        return player.e.buyables[11].times(0.1).plus(1).log(2).plus(1)
+    },
+    display() { // Everything else displayed in the buyable button after the title
+                let display = "Amount: " + player[this.layer].buyables[this.id] +
+                 "<br> Cost: " + new Decimal(10).times(new Decimal(3.8).pow(new Decimal(2).pow(player[this.layer].buyables[this.id]))).floor().sub(37) +
+                 '<br> Currently: ^' + buyableEffect('e', 11)
+                return display
+                
+    },
+    
 }
 ,
 }
@@ -148,14 +167,19 @@ upgrades: {
      title:'Another Exponent?!',
      description: 'Raises point gain to the 1.2th power',
      cost: new Decimal(3)
-    }
+    },
+    12:{
+        title: 'Exponent 2?!',
+        description: 'Raises point gain to the 1.2th power',
+        cost: new Decimal(6)
+       },
 },
 milestones: {
     0: {
-        requirementDesc: "2 Exponent Points",
+        requirementDescription: "8 Exponent Points",
        
-        done() { return player.e.points.gte(2) },
-    effectDesc: "Generate 10% of prestige points gain per second",
+        done() { return player.e.points.gte(8) },
+    effectDescription: "Generate 100% of prestige points gain per second",
 
      
 }
