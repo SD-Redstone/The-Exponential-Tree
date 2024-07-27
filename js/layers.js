@@ -80,7 +80,7 @@ addLayer("p", {
         }
     },
 
-    
+    roundUpCost(){return true}
 }
 )
 
@@ -108,15 +108,20 @@ addLayer("e", {
     } ,
     requires() { 
         let x = new Decimal(50)
-        return x.times(player[this.layer].points.pow(3).plus(1))}, // Can be a function that takes requirement increases into account
+        return x}, // Can be a function that takes requirement increases into account
     resource: "exponent points", // Name of prestige currency
     baseResource: "prestige points", // Name of resource prestige is based on
     baseAmount() {return player.p.points}, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.3, // Prestige currency exponent
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 1, // Prestige currency exponent
     gainMult() {
         let mult = new Decimal(1)
             return mult
+    },
+    canBuyMax(){
+        let the_attack_of_the_really_long_variable = false
+        if (hasMilestone('e',0)) the_attack_of_the_really_long_variable = true
+        return the_attack_of_the_really_long_variable
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         let exp = new Decimal(1)
@@ -129,9 +134,9 @@ addLayer("e", {
     layerShown(){return player.p.unlocked},
     
     buyables: {
-        11: {title: "Reverse Synergy Boost",
+        11: {title: "Reverse Synergy-Mult-Exponent",
             cost() 
-            { return new Decimal(10).times(new Decimal(3.8).pow(new Decimal(2).pow(player[this.layer].buyables[this.id]))).floor().sub(37)},
+            { return new Decimal(10).times(new Decimal(1.5).pow(new Decimal(1.5).pow(player[this.layer].buyables[this.id]))).floor().sub(14)},
             
     canAfford() { return player[this.layer].points.gte(this.cost()) },
     buy() {
@@ -143,7 +148,7 @@ addLayer("e", {
     },
     display() { // Everything else displayed in the buyable button after the title
                 let display = "Amount: " + player[this.layer].buyables[this.id] +
-                 "<br> Cost: " + new Decimal(10).times(new Decimal(3.8).pow(new Decimal(2).pow(player[this.layer].buyables[this.id]))).floor().sub(37) +
+                 "<br> Cost: " + this.cost() +
                  '<br> Currently: ^' + buyableEffect('e', 11)
                 return display
                 
@@ -157,7 +162,7 @@ addLayer("e", {
 
 
 
-
+//why are you here
 
 
 
@@ -175,7 +180,12 @@ upgrades: {
        },
 },
 milestones: {
-    0: {
+    0:{
+        requirementDescription:"3 Exponent Points",
+        done(){return player.e.points.gte(3)},
+        effectDescription:"Be able to reset for Max Exponent Points"
+    },
+    1: {
         requirementDescription: "8 Exponent Points",
        
         done() { return player.e.points.gte(8) },

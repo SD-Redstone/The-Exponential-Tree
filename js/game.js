@@ -30,7 +30,10 @@ function getResetGain(layer, useType = null) {
 		return gain.floor().max(0);
 	} else if (type=="custom"){
 		return layers[layer].getResetGain()
-	} else {
+	} else if (type=="e"){
+return layers[layer].getResetGain() // lol i made this despite the lack of the knowledge of what this means. idk what this is help me. probably should not mess with this junk cuz it advanced code
+	}
+	else{
 		return decimalZero
 	}
 }
