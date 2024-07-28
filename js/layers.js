@@ -20,7 +20,7 @@ addLayer("p", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         let exp = new Decimal(1)
-        exp = exp.times(1);
+        if (hasUpgrade('e', 14)) exp = upgradeEffect('e', 14)
         return exp;
      },
     row: 0, // Row the layer is in on the tree (0 is the first row)
@@ -28,7 +28,7 @@ addLayer("p", {
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
-    passiveGeneration() { return (hasMilestone("e", 0)) },
+    passiveGeneration() { return (hasMilestone("e", 0))},
     upgrades: {
         11: {
             title: "Mult",
@@ -66,16 +66,17 @@ addLayer("p", {
         },
         21: {
             title: "Self-Mult Boost",
-            description: "RAISES YOUR SELF-MULT TO THE POWER OF 1.2!!!111!!!!1!1!!!!!11!! WOOOOOOOOHHHOOOOOOOO (i have autism).",
+            description: "RAISES YOUR SELF-MULT TO THE POWER OF 1.2!!!111!!!!1!1!!! <br> !!11!! WOOOOOOOOHHHOOOOOOOO (i have autism).",
             cost: new Decimal(30),
         },
         22:{
             title: "Exp",
-            description: "RAISES YOUR POINT GAIN TO THE POWER OF 1.2!!!!!11111!!!111!!!1!!1!!11 YAAAAAYAYAYYYAYYYYYYY (i have autism pt.2).",
+            description: "RAISES YOUR POINT GAIN TO THE POWER OF 1.2!!!!!11111!!!111!! <br> !1!!1!!11 YAAAAAYAYAYYYAYYYYYYY (i have autism pt.2).",
             cost: new Decimal(100),
             unlocked() { let SDRedstone = false
-                if (hasMilestone('e', 0)) SDRedstone = true
-                return SDRedstone
+                if (hasMilestone('e', 1)) SDRedstone = true
+                let gdhhwwciwcdccedjcbedhjeb = SDRedstone
+                return gdhhwwciwcdccedjcbedhjeb
             }
         }
     },
@@ -107,7 +108,8 @@ addLayer("e", {
         return abcdefg 
     } ,
     requires() { 
-        let x = new Decimal(50)
+        let x = new Decimal(40)
+        if (hasUpgrade(this.layer, 12)) x = x.div(upgradeEffect(this.layer, 12))
         return x}, // Can be a function that takes requirement increases into account
     resource: "exponent points", // Name of prestige currency
     baseResource: "prestige points", // Name of resource prestige is based on
@@ -120,7 +122,7 @@ addLayer("e", {
     },
     canBuyMax(){
         let the_attack_of_the_really_long_variable = false
-        if (hasMilestone('e',0)) the_attack_of_the_really_long_variable = true
+        if (hasMilestone('e',1)) the_attack_of_the_really_long_variable = true
         return the_attack_of_the_really_long_variable
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -174,22 +176,50 @@ upgrades: {
      cost: new Decimal(3)
     },
     12:{
+        title: 'Requirment Decrease',
+        description:'Divides the Requirement for Exponent Points',
+        cost: new Decimal(5),
+        effect() {
+            return player.p.points.plus(1).log(2).plus(1)
+        },
+        effectDisplay() { return "/" + format(upgradeEffect(this.layer, this.id)) }
+    },
+    13:{
         title: 'Exponent 2?!',
         description: 'Raises point gain to the 1.2th power',
         cost: new Decimal(6)
        },
+    14:{
+        title: 'Exponent Point Exponent'
+        ,description:'Raises point gain exponentially for how many Exponent Points you have'
+    ,
+cost: new Decimal(8)
+
+,
+
+effect() {
+    return player.e.points.times(0.01).plus(1).log(3).plus(1).log(3).plus(1).log(3).plus(1)
+},
+effectDisplay() { return '^' + format(upgradeEffect(this.layer, this.id)) +
+    ""
+    +
+    ""
+ }
+
+}
 },
 milestones: {
-    0:{
-        requirementDescription:"3 Exponent Points",
-        done(){return player.e.points.gte(3)},
+    1:{
+        requirementDescription:"8 Exponent Points",
+        done(){return player.e.points.gte(8)},
         effectDescription:"Be able to reset for Max Exponent Points"
     },
-    1: {
-        requirementDescription: "8 Exponent Points",
+    0: {
+        requirementDescription: "3 Exponent Points",
        
-        done() { return player.e.points.gte(8) },
+        done() { return player.e.points.gte(3) },
     effectDescription: "Generate 100% of prestige points gain per second",
+    
 
      
 }

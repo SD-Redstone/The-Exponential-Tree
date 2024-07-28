@@ -13,14 +13,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4",
-	name: "Playable, but not beatable",
+	num: "0.5",
+	name: "Playable, and still not beatable",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+	<h3>The version you're on right now</h3><br>
+		Idk just read the github changes`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -41,11 +40,12 @@ function canGenPoints(){
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
-let gain = new Decimal((-1)**222)
+let gain = new Decimal((-1)**222).times(5) // yes i put random easter eggs in my code
 if (hasUpgrade('p', 11)) gain = gain.times(2)
 		if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12))
-			if (hasUpgrade('p', 13)) gain = gain.times(upgradeEffect('p', 13))
-			if (hasUpgrade('e', 11)) gain = gain.pow(1.2)
+		if (hasUpgrade('p', 13)) gain = gain.times(upgradeEffect('p', 13))
+		if (hasUpgrade('e', 11)) gain = gain.pow(1.2)
+		if (hasUpgrade('e', 13)) gain = gain.pow(1.2)
   return gain
 }
 
