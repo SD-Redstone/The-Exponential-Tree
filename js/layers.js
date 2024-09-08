@@ -131,7 +131,7 @@ addLayer("e", {
      },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "e", description: "EX: Reset for exponent points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "e", description: "E: Reset for exponent points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return player.p.unlocked},
     
@@ -225,8 +225,45 @@ milestones: {
 }
 }
 })
+addLayer("em", {
+    branches:['e'],
+    name: "exponent multiplier", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "EM", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#5ff",
+    requires: new Decimal(45), // Can be a function that takes requirement increases into account
+    resource: "multiplier points", // Name of prestige currency
+    baseResource: "exponent points", // Name of resource prestige is based on
+    baseAmount() {return player.e.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.4, // Prestige currency exponent
+    gainMult() {
+        let mult = new Decimal(1)
+            return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        let exp = new Decimal(1)
+        return exp;
+     },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "shift"+"e", description: "Shift + E: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return true},
+    
+    upgrades: {
+        
+    },
+    milestones:{
 
+    },
 
-
+    roundUpCost(){return true}
+}
+)
 
 
